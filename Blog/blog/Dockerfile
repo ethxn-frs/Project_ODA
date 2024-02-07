@@ -1,22 +1,25 @@
-# Image de rust
+# Image de base Rust avec support de nightly pour Rocket
 FROM rustlang/rust:nightly
 
-# Pour pg
-RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+# Installation des dépendances nécessaires pour PostgreSQL et Diesel CLI
+RUN apt-get update && apt-get install -y libpq-dev pkg-config libssl-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    cargo install diesel_cli --no-default-features --features postgres
 
-# Dir
+# Répertoire de travail
 WORKDIR /usr/src/app
 
-# Pour copier le cs
+# Copie du code source dans le conteneur
 COPY . .
 
-# Compil
+# Compilation de l'application en mode release
 RUN cargo build --release
-        
+
+# Copie du binaire compilé pour un accès plus facile
 RUN cp target/release/blog .
 
-# Definir le port ( localhost : 8000)
+# Exposition du port
 EXPOSE 8000
 
-# Commande pour exec
-CMD ["./blog"]
+# Commande pour exécuter les migrations et démarrer l'application
+CMD diesel migration run && ./blog
