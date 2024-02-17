@@ -36,10 +36,3 @@ RUN php bin/console asset-map:compile
 
 # Nettoyer le cache
 RUN php bin/console cache:clear --env=prod
-
-# Exposer le port 8000 pour le service PHP-FPM
-EXPOSE 8000
-
-#RUN sed -i 's/9000/8000/' /usr/local/etc/php-fpm.d/zz-docker.conf
-
-CMD ["php-fpm"]
