@@ -19,12 +19,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Répertoire de travail
-WORKDIR /var/www
-
 # Copier les fichiers de l'application dans le conteneur
 COPY . /var/www
 
+WORKDIR /var/www
 # Installation des dépendances de l'application avec Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -36,3 +34,5 @@ RUN php bin/console asset-map:compile
 
 # Nettoyer le cache
 RUN php bin/console cache:clear --env=prod
+
+COPY --chown=www-data:www-data . /var/www/html
