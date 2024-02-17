@@ -3,18 +3,6 @@
 # Image PHP avec PHP-FPM et PHP 8.3
 FROM php:8.3-fpm
 
-# Installer les dépendances requises pour l'extension intl
-#RUN apt-get update && apt-get install -y \
-#        libicu-dev \
-#    && rm -rf /var/lib/apt/lists/*
-
-# Installer les dépendances requises pour l'extension intl
-#RUN apt-get update && apt-get install -y \
-#        libicu-dev \
-#    && docker-php-ext-install intl \
-#    && apt-get clean \
-#    && rm -rf /var/lib/apt/lists/*
-
 RUN apt-get update && apt-get install -y \
         libicu-dev \
         libzip-dev \
@@ -26,6 +14,8 @@ RUN apt-get update && apt-get install -y \
 # Installation des extensions PHP requises
 RUN docker-php-ext-install intl
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -36,13 +26,20 @@ WORKDIR /var/www
 COPY . /var/www
 
 # Installation des dépendances de l'application avec Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN composer install --no-dev --optimize-autoloader
 
+RUN composer require symfony/runtime
 # Compiler le JS et le CSS
 RUN php bin/console asset-map:compile
 
 # Nettoyer le cache
 RUN php bin/console cache:clear --env=prod
 
-# Exposer le port 9000 pour le service PHP-FPM
+# Exposer le port 8000 pour le service PHP-FPM
 EXPOSE 8000
+
+#RUN sed -i 's/9000/8000/' /usr/local/etc/php-fpm.d/zz-docker.conf
+
+CMD ["php-fpm"]
