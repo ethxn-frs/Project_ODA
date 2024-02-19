@@ -27,7 +27,6 @@ services:
       - tvshows_net
     
 
-
 networks:
   tvshows_net:
     name: tvshows_net
