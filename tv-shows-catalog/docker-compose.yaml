@@ -15,7 +15,7 @@ services:
       - ./client/.env
     networks:
       - tvshows_net
-      
+
   server:
     container_name: server
     build:
@@ -25,7 +25,6 @@ services:
       - "3000:3000"
     networks:
       - tvshows_net
-    
 
 networks:
   tvshows_net:
