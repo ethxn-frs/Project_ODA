@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install intl zip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 # Installation des extensions PHP requises
 RUN docker-php-ext-install intl
 
@@ -20,9 +21,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Symfony CLI
 RUN wget https://get.symfony.com/cli/installer -O - | bash
 
-# Installation de Composer
-#COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Copier les fichiers de l'application dans le conteneur
 WORKDIR /var/www
 
@@ -31,13 +29,17 @@ COPY . /var/www
 # Installation des dépendances de l'application avec Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+#Installer les dépendances via Composer
 RUN composer install --no-dev --optimize-autoloader
 
+# Ajout de symfony/runtime
 RUN composer require symfony/runtime
+
 # Compiler le JS et le CSS
 RUN php bin/console asset-map:compile
 
 # Nettoyer le cache
 RUN php bin/console cache:clear --env=prod
 
+#copie l'ensemble des fichiers dans /var/www/html
 COPY --chown=www-data:www-data . /var/www/html
