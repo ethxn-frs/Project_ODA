@@ -16,13 +16,18 @@ RUN docker-php-ext-install intl
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Symfony CLI
+RUN wget https://get.symfony.com/cli/installer -O - | bash
+
 # Installation de Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+#COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copier les fichiers de l'application dans le conteneur
+WORKDIR /var/www
+
 COPY . /var/www
 
-WORKDIR /var/www
 # Installation des dépendances de l'application avec Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
