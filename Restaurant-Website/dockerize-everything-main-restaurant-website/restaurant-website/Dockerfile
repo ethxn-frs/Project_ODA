@@ -16,13 +16,16 @@ RUN docker-php-ext-install intl
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-# Installation de Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Répertoire de travail
-WORKDIR /var/www
+# Symfony CLI
+RUN wget https://get.symfony.com/cli/installer -O - | bash
+
+# Installation de Composer
+#COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copier les fichiers de l'application dans le conteneur
+WORKDIR /var/www
+
 COPY . /var/www
 
 # Installation des dépendances de l'application avec Composer
@@ -37,9 +40,4 @@ RUN php bin/console asset-map:compile
 # Nettoyer le cache
 RUN php bin/console cache:clear --env=prod
 
-# Exposer le port 8000 pour le service PHP-FPM
-EXPOSE 8000
-
-#RUN sed -i 's/9000/8000/' /usr/local/etc/php-fpm.d/zz-docker.conf
-
-CMD ["php-fpm"]
+COPY --chown=www-data:www-data . /var/www/html
