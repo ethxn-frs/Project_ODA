@@ -32,9 +32,6 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 #Installer les dépendances via Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Ajout de symfony/runtime
-RUN composer require symfony/runtime
-
 # Compiler le JS et le CSS
 RUN php bin/console asset-map:compile
 
