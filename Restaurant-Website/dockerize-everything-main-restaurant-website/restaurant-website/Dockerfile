@@ -22,9 +22,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN wget https://get.symfony.com/cli/installer -O - | bash
 
 # Copier les fichiers de l'application dans le conteneur
-WORKDIR /var/www
+WORKDIR /var/www/html
 
-COPY . /var/www
+COPY . .
 
 # Installation des dépendances de l'application avec Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -42,4 +42,4 @@ RUN php bin/console asset-map:compile
 RUN php bin/console cache:clear --env=prod
 
 #copie l'ensemble des fichiers dans /var/www/html
-COPY --chown=www-data:www-data . /var/www/html
+COPY --chown=www-data:www-data . .
