@@ -20,3 +20,4 @@ EXPOSE 5173
 
 # Commande de démarrage de l'app Vite.js
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+#node build/index.js
