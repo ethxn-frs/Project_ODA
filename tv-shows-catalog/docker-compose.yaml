@@ -12,7 +12,7 @@ services:
     ports:
       - "${CLIENT_PORT}:5173"
     env_file:
-      - ./client/.env
+      - ./.env
 
   server:
     container_name: server
@@ -21,3 +21,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT}:3000"
+    env_file:
+      - ./.env
