@@ -5,7 +5,6 @@ version: '3.8'
 services:
   grilli_app:
     hostname: php
-    container_name: grilli_app
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,12 +12,9 @@ services:
       - php:/var/www/html
 
     environment:
-      - APP_ENV=prod
-    networks:
-      - grilli_network
+      - APP_ENV=${APP_ENV}
 
   nginx:
-    container_name: nginx
     image: nginx:latest
     ports:
       - '8080:80'
@@ -28,12 +24,6 @@ services:
 
     depends_on:
       - grilli_app
-    networks:
-      - grilli_network
-
-networks:
-  grilli_network:
-    driver: bridge
 
 volumes:
   php:
